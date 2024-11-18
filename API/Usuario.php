@@ -31,5 +31,22 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
     $registroUltimoCodigoCadastroUsuario = Conexao::Obtem()->lastInsertId();
 
     echo json_encode($registroUltimoCodigoCadastroUsuario);
+}else if($_SERVER["REQUEST_METHOD"] === "GET"){
+    $loginUsuario = $_GET["recebe_login_usuario"];
+    $senhaUsuario = $_GET["recebe_senha_usuario"];
+
+    $senhaCriptografada = md5($senhaUsuario);
+
+    $sqlBuscaUsuario = "select * from usuario where login_usuario = :recebe_login_usuario and senha_usuario = :recebe_senha_usuario";
+    $comandoBuscaUsuario = Conexao::Obtem()->prepare($sqlBuscaUsuario);
+    $comandoBuscaUsuario->bindValue(":recebe_login_usuario",$loginUsuario);
+    $comandoBuscaUsuario->bindValue(":recebe_senha_usuario",$senhaCriptografada);
+    $comandoBuscaUsuario->execute();
+    $resultadoBuscaUsuario = $comandoBuscaUsuario->fetch(PDO::FETCH_ASSOC);
+
+    if(empty($resultadoBuscaUsuario))
+        echo json_encode("nenhum usuario localizado");
+    else
+        echo json_encode($resultadoBuscaUsuario);
 }
 ?>
