@@ -32,21 +32,40 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
 
     echo json_encode($registroUltimoCodigoCadastroUsuario);
 }else if($_SERVER["REQUEST_METHOD"] === "GET"){
-    $loginUsuario = $_GET["recebe_login_usuario"];
-    $senhaUsuario = $_GET["recebe_senha_usuario"];
+    $processo_usuario = $_GET["execucao"];
 
-    $senhaCriptografada = md5($senhaUsuario);
+    if($processo_usuario === "busca_usuario")
+    {
+        $loginUsuario = $_GET["recebe_login_usuario"];
+        $senhaUsuario = $_GET["recebe_senha_usuario"];
 
-    $sqlBuscaUsuario = "select * from usuario where login_usuario = :recebe_login_usuario and senha_usuario = :recebe_senha_usuario";
-    $comandoBuscaUsuario = Conexao::Obtem()->prepare($sqlBuscaUsuario);
-    $comandoBuscaUsuario->bindValue(":recebe_login_usuario",$loginUsuario);
-    $comandoBuscaUsuario->bindValue(":recebe_senha_usuario",$senhaCriptografada);
-    $comandoBuscaUsuario->execute();
-    $resultadoBuscaUsuario = $comandoBuscaUsuario->fetch(PDO::FETCH_ASSOC);
+        $senhaCriptografada = md5($senhaUsuario);
 
-    if(empty($resultadoBuscaUsuario))
-        echo json_encode("nenhum usuario localizado");
-    else
-        echo json_encode($resultadoBuscaUsuario);
+        $sqlBuscaUsuario = "select * from usuario where login_usuario = :recebe_login_usuario and senha_usuario = :recebe_senha_usuario";
+        $comandoBuscaUsuario = Conexao::Obtem()->prepare($sqlBuscaUsuario);
+        $comandoBuscaUsuario->bindValue(":recebe_login_usuario",$loginUsuario);
+        $comandoBuscaUsuario->bindValue(":recebe_senha_usuario",$senhaCriptografada);
+        $comandoBuscaUsuario->execute();
+        $resultadoBuscaUsuario = $comandoBuscaUsuario->fetch(PDO::FETCH_ASSOC);
+
+        if(empty($resultadoBuscaUsuario))
+            echo json_encode("nenhum usuario localizado");
+        else
+            echo json_encode($resultadoBuscaUsuario);
+    }else if($processo_usuario === "busca_dados_usuario")
+    {
+        $codigoUsuario = $_GET["recebe_codigo_usuario"];
+
+        $sqlBuscaUsuarioEspecifico = "select * from usuario where codigo_usuario = :recebe_codigo_usuario_especifico";
+        $comandoBuscaUsuarioEspecifico = Conexao::Obtem()->prepare($sqlBuscaUsuarioEspecifico);
+        $comandoBuscaUsuarioEspecifico->bindValue(":recebe_codigo_usuario_especifico",$codigoUsuario);
+        $comandoBuscaUsuarioEspecifico->execute();
+        $resultadoBuscaUsuarioEspecifico = $comandoBuscaUsuarioEspecifico->fetch(PDO::FETCH_ASSOC);
+
+        if(empty($resultadoBuscaUsuarioEspecifico))
+            echo json_encode("nenhum usuario localizado");
+        else
+            echo json_encode($resultadoBuscaUsuarioEspecifico);
+    }
 }
 ?>
