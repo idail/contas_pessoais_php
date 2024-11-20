@@ -67,5 +67,27 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         else
             echo json_encode($resultadoBuscaUsuarioEspecifico);
     }
+}else if($_SERVER["REQUEST_METHOD"] === "PUT")
+{
+    $dados_usuario_alterar = json_decode(file_get_contents("php://input"), true);
+
+    $senhaCriptografada = md5($dados_usuario_alterar["senha_usuario_alterar"]);
+
+    $sqlAlteraUsuarioEspecifico = "update usuario set nome_usuario = :recebe_nome_usuario_alterar,login_usuario = :recebe_login_usuario_alterar,email_usuario = :recebe_email_usuario_alterar,senha_usuario = :recebe_senha_usuario_alterar,
+    imagem_usuario = :recebe_imagem_usuario_alterar where codigo_usuario = :recebe_codigo_usuario_alterar";
+    $comandoAlterarUsuarioEspecifico = Conexao::Obtem()->prepare($sqlAlteraUsuarioEspecifico);
+    $comandoAlterarUsuarioEspecifico->bindValue(":recebe_nome_usuario_alterar",$dados_usuario_alterar["nome_usuario_alterar"]);
+    $comandoAlterarUsuarioEspecifico->bindValue(":recebe_login_usuario_alterar",$dados_usuario_alterar["login_usuario_alterar"]);
+    $comandoAlterarUsuarioEspecifico->bindValue(":recebe_email_usuario_alterar",$dados_usuario_alterar["email_usuario_alterar"]);
+    $comandoAlterarUsuarioEspecifico->bindValue(":recebe_senha_usuario_alterar",$senhaCriptografada);
+    $comandoAlterarUsuarioEspecifico->bindValue(":recebe_imagem_usuario_alterar",$dados_usuario_alterar["nome_imagem_usuario_alterar"]);
+    $comandoAlterarUsuarioEspecifico->bindValue(":recebe_codigo_usuario_alterar",$dados_usuario_alterar["codigo_usuario_alterar"]);
+
+    $resultadoAlterarUsuarioEspecifico = $comandoAlterarUsuarioEspecifico->execute();
+
+    if($resultadoAlterarUsuarioEspecifico)
+        echo json_encode("alterado");
+    else
+        echo json_encode("nao alterado");
 }
 ?>
