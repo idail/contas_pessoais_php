@@ -7,7 +7,7 @@ class Conexao{
         if(self::$conexao === null)
         {
             try{
-                self::$conexao = new PDO("mysql:dbname=contas_pessoais;host=localhost","root","");
+                self::$conexao = new PDO("mysql:dbname=idailneto05;host=mysql.idailneto.com.br","idailneto05","BatmanI19910615");
                 return self::$conexao;
             }catch(PDOException $exception)
             {
