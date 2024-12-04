@@ -24,9 +24,17 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
 {
     $processo_categoria = $_GET["execucao"];
 
-    if($processo_usuario === "busca_categorias")
+    if($processo_categoria === "busca_categorias")
     {
+        $sqlBuscaCategoriasRenda = "select * from categoria_renda";
+        $comandoBuscaCategoriasRenda = Conexao::Obtem()->prepare($sqlBuscaCategoriasRenda);
+        $comandoBuscaCategoriasRenda->execute();
+        $resultadoBuscaCategoriasRenda = $comandoBuscaCategoriasRenda->fetch(PDO::FETCH_ASSOC);
 
+        if(empty($resultadoBuscaCategoriasRenda))
+            echo json_encode("nenhum registro localizado");
+        else
+            echo json_encode($resultadoBuscaCategoriasRenda);
     }
 }
 ?>
