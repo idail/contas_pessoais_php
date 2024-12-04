@@ -20,5 +20,13 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
     $registroUltimoCodigoCadastroCategoriaRenda = Conexao::Obtem()->lastInsertId();
 
     echo json_encode($registroUltimoCodigoCadastroCategoriaRenda);
+}if($_SERVER["REQUEST_METHOD"] === "GET")
+{
+    $processo_categoria = $_GET["execucao"];
+
+    if($processo_usuario === "busca_categorias")
+    {
+
+    }
 }
 ?>
