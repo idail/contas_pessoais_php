@@ -31,7 +31,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $pagoRenda = $valores["pago_renda"];
 
         $sqlCadastrarRenda = "insert into renda(nome_renda,categoria_renda,valor_renda,pago_renda)values(:recebe_nome_renda,:categoria_renda,:valor_renda,:pago_renda)";
-        $comandoCadastrarRenda = Conexao::Obtem()->prepare($sqlCadastrarCategoriaRenda);
+        $comandoCadastrarRenda = Conexao::Obtem()->prepare($sqlCadastrarRenda);
         $comandoCadastrarRenda->bindValue(":recebe_nome_renda",$nomeRenda);
         $comandoCadastrarRenda->bindValue(":categoria_renda",$categoriaRenda);
         $comandoCadastrarRenda->bindValue(":valor_renda",$valorRenda);
