@@ -11,15 +11,36 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
 {
     $valores = json_decode(file_get_contents("php://input"), true);
 
-    $nomeCategoriaRenda = $valores["nome_categoria_renda"];
+    $processo_categoria = $valores["execucao"];
 
-    $sqlCadastrarCategoriaRenda = "insert into categoria_renda(nome_categoria)values(:recebe_nome_categoria_renda)";
-    $comandoCadastrarCategoriaRenda = Conexao::Obtem()->prepare($sqlCadastrarCategoriaRenda);
-    $comandoCadastrarCategoriaRenda->bindValue(":recebe_nome_categoria_renda",$nomeCategoriaRenda);
-    $comandoCadastrarCategoriaRenda->execute();
-    $registroUltimoCodigoCadastroCategoriaRenda = Conexao::Obtem()->lastInsertId();
+    if($processo_categoria === "cadastrar_categoria_renda")
+    {
+        $nomeCategoriaRenda = $valores["nome_categoria_renda"];
 
-    echo json_encode($registroUltimoCodigoCadastroCategoriaRenda);
+        $sqlCadastrarCategoriaRenda = "insert into categoria_renda(nome_categoria)values(:recebe_nome_categoria_renda)";
+        $comandoCadastrarCategoriaRenda = Conexao::Obtem()->prepare($sqlCadastrarCategoriaRenda);
+        $comandoCadastrarCategoriaRenda->bindValue(":recebe_nome_categoria_renda",$nomeCategoriaRenda);
+        $comandoCadastrarCategoriaRenda->execute();
+        $registroUltimoCodigoCadastroCategoriaRenda = Conexao::Obtem()->lastInsertId();
+
+        echo json_encode($registroUltimoCodigoCadastroCategoriaRenda);
+    }else if($processo_categoria === "cadastrar_renda"){
+        $nomeRenda = $valores["nome_renda"];
+        $categoriaRenda = $valores["categoria_renda"];
+        $valorRenda = $valores["valor_renda"];
+        $pagoRenda = $valores["pago_renda"];
+
+        $sqlCadastrarRenda = "insert into renda(nome_renda,categoria_renda,valor_renda,pago_renda)values(:recebe_nome_renda,:categoria_renda,:valor_renda,:pago_renda)";
+        $comandoCadastrarRenda = Conexao::Obtem()->prepare($sqlCadastrarCategoriaRenda);
+        $comandoCadastrarRenda->bindValue(":recebe_nome_renda",$nomeRenda);
+        $comandoCadastrarRenda->bindValue(":categoria_renda",$categoriaRenda);
+        $comandoCadastrarRenda->bindValue(":valor_renda",$valorRenda);
+        $comandoCadastrarRenda->bindValue(":pago_renda",$pagoRenda);
+        $comandoCadastrarRenda->execute();
+        $registroUltimoCodigoCadastroRenda = Conexao::Obtem()->lastInsertId();
+
+        echo json_encode($registroUltimoCodigoCadastroRenda);
+    }
 }if($_SERVER["REQUEST_METHOD"] === "GET")
 {
     $processo_categoria = $_GET["execucao"];
@@ -29,12 +50,9 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $sqlBuscaCategoriasRenda = "select * from categoria_renda";
         $comandoBuscaCategoriasRenda = Conexao::Obtem()->prepare($sqlBuscaCategoriasRenda);
         $comandoBuscaCategoriasRenda->execute();
-        $resultadoBuscaCategoriasRenda = $comandoBuscaCategoriasRenda->fetch(PDO::FETCH_ASSOC);
+        $resultadoBuscaCategoriasRenda = $comandoBuscaCategoriasRenda->fetchAll(PDO::FETCH_ASSOC);
 
-        if(empty($resultadoBuscaCategoriasRenda))
-            echo json_encode("nenhum registro localizado");
-        else
-            echo json_encode($resultadoBuscaCategoriasRenda);
+        echo json_encode($resultadoBuscaCategoriasRenda);    
     }
 }
 ?>
