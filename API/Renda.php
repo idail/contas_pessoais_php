@@ -31,6 +31,27 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $registroUltimoCodigoCadastroRenda = Conexao::Obtem()->lastInsertId();
 
         echo json_encode($registroUltimoCodigoCadastroRenda);
+    }else if($processo_renda === "alterar_renda")
+    {
+        $nomeRenda = $valores["nome_renda"];
+        $categoriaRenda = $valores["categoria_renda"];
+        $valorRenda = $valores["valor_renda"];
+        $pagoRenda = $valores["pago_renda"];
+        $codigoRenda = $valores["codigo_renda"];
+
+        $sqlCadastrarRenda = "update renda set nome_renda = :recebe_nome_renda, categoria_renda = :recebe_categoria_renda, valor_renda = :recebe_valor_renda, pago_renda = :recebe_pago_renda where codigo_renda = :recebe_codigo_renda";
+        $comandoCadastrarRenda = Conexao::Obtem()->prepare($sqlCadastrarRenda);
+        $comandoCadastrarRenda->bindValue(":recebe_nome_renda",$nomeRenda);
+        $comandoCadastrarRenda->bindValue(":recebe_categoria_renda",$categoriaRenda);
+        $comandoCadastrarRenda->bindValue(":recebe_valor_renda",$valorRenda);
+        $comandoCadastrarRenda->bindValue(":recebe_pago_renda",$pagoRenda);
+        $comandoCadastrarRenda->bindValue(":recebe_codigo_renda",$codigoRenda);
+        $resultadoAlterarRenda = $comandoCadastrarRenda->execute();
+        
+        if($resultadoAlterarRenda)
+            echo json_encode("renda alterada");
+        else
+            echo json_encode("renda nao alterada");
     }
 }else if($_SERVER["REQUEST_METHOD"] === "GET")
 {
