@@ -66,4 +66,25 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
 
         echo json_encode($resultadoBuscaRendas);
     }
+}else if($_SERVER["REQUEST_METHOD"] === "DELETE")
+{
+    // Recebe os dados do corpo da requisição
+    $valores = json_decode(file_get_contents("php://input"), true);
+
+    // Verifica se as variáveis 'execucao' e 'codigo_renda' foram enviadas
+    $processo_renda = $valores["execucao"] ?? null;
+    $codigo_renda = $valores["codigo_renda"] ?? null;
+
+    if($processo_renda === "excluir_renda")
+    {
+        $sqlExcluirRenda = "delete from renda where codigo_renda = :recebe_codigo_renda";
+        $comandoExcluirRenda = Conexao::Obtem()->prepare($sqlExcluirRenda);
+        $comandoExcluirRenda->bindValue(":recebe_codigo_renda",$codigo_renda);
+        $resultadoExcluirRenda = $comandoExcluirRenda->execute();
+
+        if($resultadoExcluirRenda)
+            echo json_encode("renda excluida");
+        else
+            echo json_encode("renda nao excluida");
+    }
 }
