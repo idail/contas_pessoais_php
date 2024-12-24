@@ -56,13 +56,23 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
 }else if($_SERVER["REQUEST_METHOD"] === "GET")
 {
     $processo_renda = $_GET["execucao"];
-
+    $opcao = $_GET["opcao"];
+    $filtroInformado = $_GET["filtro"];
     if($processo_renda === "busca_rendas")
     {
-        $sqlBuscaRendas = "select * from renda";
-        $comandoBuscaRendas = Conexao::Obtem()->prepare($sqlBuscaRendas);
-        $comandoBuscaRendas->execute();
-        $resultadoBuscaRendas = $comandoBuscaRendas->fetchAll(PDO::FETCH_ASSOC);
+        if($opcao === "todos")
+        {
+            $sqlBuscaRendas = "select * from renda";
+            $comandoBuscaRendas = Conexao::Obtem()->prepare($sqlBuscaRendas);
+            $comandoBuscaRendas->execute();
+            $resultadoBuscaRendas = $comandoBuscaRendas->fetchAll(PDO::FETCH_ASSOC);
+        }else{
+            $sqlBuscaRendas = "select * from renda where nome_renda like :recebe_nome_renda";
+            $comandoBuscaRendas = Conexao::Obtem()->prepare($sqlBuscaRendas);
+            $comandoBuscaRendas->bindValue(":recebe_nome_renda","%$filtroInformado%");
+            $comandoBuscaRendas->execute();
+            $resultadoBuscaRendas = $comandoBuscaRendas->fetchAll(PDO::FETCH_ASSOC);
+        }
 
         echo json_encode($resultadoBuscaRendas);
     }
