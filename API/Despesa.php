@@ -31,7 +31,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $registroUltimoCodigoCadastroDespesa = Conexao::Obtem()->lastInsertId();
 
         echo json_encode($registroUltimoCodigoCadastroDespesa);
-    }else if($processo_renda === "alterar_despesa")
+    }else if($processo_despesa === "alterar_despesa")
     {
         $nomeDespesa = $valores["nome_despesa"];
         $categoriaDespesa = $valores["categoria_despesa"];
