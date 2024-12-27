@@ -31,6 +31,27 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $registroUltimoCodigoCadastroDespesa = Conexao::Obtem()->lastInsertId();
 
         echo json_encode($registroUltimoCodigoCadastroDespesa);
+    }else if($processo_renda === "alterar_despesa")
+    {
+        $nomeDespesa = $valores["nome_despesa"];
+        $categoriaDespesa = $valores["categoria_despesa"];
+        $valorDespesa = $valores["valor_despesa"];
+        $pagoDespesa = $valores["pago_despesa"];
+        $codigoDespesa = $valores["codigo_despesa"];
+
+        $sqlAlterarDespesa = "update despesa set nome_despesa = :recebe_nome_despesa, categoria_despesa = :recebe_categoria_despesa, valor_despesa = :recebe_valor_despesa, pago_despesa = :recebe_pago_despesa where codigo_despesa = :recebe_codigo_despesa";
+        $comandoAlterarDespesa = Conexao::Obtem()->prepare($sqlAlterarDespesa);
+        $comandoAlterarDespesa->bindValue(":recebe_nome_despesa",$nomeDespesa);
+        $comandoAlterarDespesa->bindValue(":recebe_categoria_despesa",$categoriaDespesa);
+        $comandoAlterarDespesa->bindValue(":recebe_valor_despesa",$valorDespesa);
+        $comandoAlterarDespesa->bindValue(":recebe_pago_despesa",$pagoDespesa);
+        $comandoAlterarDespesa->bindValue(":recebe_codigo_despesa",$codigoDespesa);
+        $resultadoAlterarDespesa = $comandoAlterarDespesa->execute();
+        
+        if($resultadoAlterarDespesa)
+            echo json_encode("despesa alterada");
+        else
+            echo json_encode("despesa nao alterada");
     }
 }else if($_SERVER["REQUEST_METHOD"] === "GET")
 {
@@ -68,7 +89,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
     if($processo_despesa === "excluir_despesa")
     {
         $sqlExcluirDespesa = "delete from despesa where codigo_despesa = :recebe_codigo_despesa";
-        $comandoExcluirDespesa = Conexao::Obtem()->prepare($sqlExcluirRenda);
+        $comandoExcluirDespesa = Conexao::Obtem()->prepare($sqlExcluirDespesa);
         $comandoExcluirDespesa->bindValue(":recebe_codigo_despesa",$codigo_despesa);
         $resultadoExcluirDespesa = $comandoExcluirDespesa->execute();
 
