@@ -40,16 +40,14 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $valorRenda = $valores["valor_renda"];
         $pagoRenda = $valores["pago_renda"];
         $codigoRenda = $valores["codigo_renda"];
-        $codigoUsuarioRenda = $valores["codigo_usuario_renda"];
 
-        $sqlCadastrarRenda = "update renda set nome_renda = :recebe_nome_renda, categoria_renda = :recebe_categoria_renda, valor_renda = :recebe_valor_renda, pago_renda = :recebe_pago_renda where codigo_renda = :recebe_codigo_renda and codigo_usuario = :recebe_codigo_usuario";
+        $sqlCadastrarRenda = "update renda set nome_renda = :recebe_nome_renda, categoria_renda = :recebe_categoria_renda, valor_renda = :recebe_valor_renda, pago_renda = :recebe_pago_renda where codigo_renda = :recebe_codigo_renda";
         $comandoAlterarRenda = Conexao::Obtem()->prepare($sqlCadastrarRenda);
         $comandoAlterarRenda->bindValue(":recebe_nome_renda",$nomeRenda);
         $comandoAlterarRenda->bindValue(":recebe_categoria_renda",$categoriaRenda);
         $comandoAlterarRenda->bindValue(":recebe_valor_renda",$valorRenda);
         $comandoAlterarRenda->bindValue(":recebe_pago_renda",$pagoRenda);
         $comandoAlterarRenda->bindValue(":recebe_codigo_renda",$codigoRenda);
-        $comandoAlterarRenda->bindValue(":recebe_codigo_usuario",$codigoUsuarioRenda);
         $resultadoAlterarRenda = $comandoAlterarRenda->execute();
         
         if($resultadoAlterarRenda)
