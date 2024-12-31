@@ -19,14 +19,16 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $categoriaDespesa = $valores["categoria_despesa"];
         $valorDespesa = $valores["valor_despesa"];
         $pagoDespesa = $valores["pago_despesa"];
+        $usuarioCodigoDespesa = $valores["codigo_despesa"];
 
-        $sqlCadastrarDespesa = "insert into despesa(nome_despesa,categoria_despesa,valor_despesa,pago_despesa)values
-        (:recebe_nome_despesa,:recebe_categoria_despesa,:recebe_valor_despesa,:recebe_pago_despesa)";
+        $sqlCadastrarDespesa = "insert into despesa(nome_despesa,categoria_despesa,valor_despesa,pago_despesa,codigo_usuario)values
+        (:recebe_nome_despesa,:recebe_categoria_despesa,:recebe_valor_despesa,:recebe_pago_despesa,:recebe_codigo_usuario)";
         $comandoCadastrarDespesa = Conexao::Obtem()->prepare($sqlCadastrarDespesa);
         $comandoCadastrarDespesa->bindValue(":recebe_nome_despesa",$nomeDespesa);
         $comandoCadastrarDespesa->bindValue(":recebe_categoria_despesa",$categoriaDespesa);
         $comandoCadastrarDespesa->bindValue(":recebe_valor_despesa",$valorDespesa);
         $comandoCadastrarDespesa->bindValue(":recebe_pago_despesa",$pagoDespesa);
+        $comandoCadastrarDespesa->bindValue(":recebe_codigo_usuario",$usuarioCodigoDespesa);
         $comandoCadastrarDespesa->execute();
         $registroUltimoCodigoCadastroDespesa = Conexao::Obtem()->lastInsertId();
 
@@ -58,19 +60,21 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
     $processo_despesa = $_GET["execucao"];
     $opcao = $_GET["opcao"];
     $filtroInformado = $_GET["filtro"];
-
+    $codigoUsuario = $_GET["codigo_usuario"];
     if($processo_despesa === "busca_despesas")
     {
         if($opcao === "todos")
         {
-            $sqlBuscaDespesas = "select * from despesa";
+            $sqlBuscaDespesas = "select * from despesa where codigo_usuario = :recebe_codigo_usuario";
             $comandoBuscaDespesas = Conexao::Obtem()->prepare($sqlBuscaDespesas);
+            $comandoBuscaDespesas->bindValue(":recebe_codigo_usuario",$codigoUsuario);
             $comandoBuscaDespesas->execute();
             $resultadoBuscaDespesas = $comandoBuscaDespesas->fetchAll(PDO::FETCH_ASSOC);
         }else{
-            $sqlBuscaDespesas = "select * from despesa where nome_despesa like :recebe_nome_despesa";
+            $sqlBuscaDespesas = "select * from despesa where nome_despesa like :recebe_nome_despesa and codigo_usuario = :recebe_codigo_usuario";
             $comandoBuscaDespesas = Conexao::Obtem()->prepare($sqlBuscaDespesas);
             $comandoBuscaDespesas->bindValue(":recebe_nome_despesa","%$filtroInformado%");
+            $comandoBuscaDespesas->bindValue(":recebe_codigo_usuario",$codigoUsuario);
             $comandoBuscaDespesas->execute();
             $resultadoBuscaDespesas = $comandoBuscaDespesas->fetchAll(PDO::FETCH_ASSOC);
         }
