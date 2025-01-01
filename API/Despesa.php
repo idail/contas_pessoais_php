@@ -70,10 +70,17 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
             $comandoBuscaDespesas->bindValue(":recebe_codigo_usuario",$codigoUsuario);
             $comandoBuscaDespesas->execute();
             $resultadoBuscaDespesas = $comandoBuscaDespesas->fetchAll(PDO::FETCH_ASSOC);
-        }else{
+        }else if($filtroInformado === "busca_nome_despesa"){
             $sqlBuscaDespesas = "select * from despesa where nome_despesa like :recebe_nome_despesa and codigo_usuario = :recebe_codigo_usuario";
             $comandoBuscaDespesas = Conexao::Obtem()->prepare($sqlBuscaDespesas);
             $comandoBuscaDespesas->bindValue(":recebe_nome_despesa","%$filtroInformado%");
+            $comandoBuscaDespesas->bindValue(":recebe_codigo_usuario",$codigoUsuario);
+            $comandoBuscaDespesas->execute();
+            $resultadoBuscaDespesas = $comandoBuscaDespesas->fetchAll(PDO::FETCH_ASSOC);
+        }else if($opcao === "visualizar_tudo")
+        {
+            $sqlBuscaDespesas = "select sum(valor_despesa) from despesa where codigo_usuario = :recebe_codigo_usuario";
+            $comandoBuscaDespesas = Conexao::Obtem()->prepare($sqlBuscaDespesas);
             $comandoBuscaDespesas->bindValue(":recebe_codigo_usuario",$codigoUsuario);
             $comandoBuscaDespesas->execute();
             $resultadoBuscaDespesas = $comandoBuscaDespesas->fetchAll(PDO::FETCH_ASSOC);

@@ -70,10 +70,16 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
             $comandoBuscaRendas->bindValue(":recebe_codigo_usuario",$codigoUsuarioRenda);
             $comandoBuscaRendas->execute();
             $resultadoBuscaRendas = $comandoBuscaRendas->fetchAll(PDO::FETCH_ASSOC);
-        }else{
+        }else if($filtroInformado === "busca_nome_renda"){
             $sqlBuscaRendas = "select * from renda where nome_renda like :recebe_nome_renda and codigo_usuario = :recebe_codigo_usuario";
             $comandoBuscaRendas = Conexao::Obtem()->prepare($sqlBuscaRendas);
             $comandoBuscaRendas->bindValue(":recebe_nome_renda","%$filtroInformado%");
+            $comandoBuscaRendas->bindValue(":recebe_codigo_usuario",$codigoUsuarioRenda);
+            $comandoBuscaRendas->execute();
+            $resultadoBuscaRendas = $comandoBuscaRendas->fetchAll(PDO::FETCH_ASSOC);
+        }else if($opcao === "visualizar_tudo"){
+            $sqlBuscaRendas = "select sum(valor_renda) from renda where codigo_usuario = :recebe_codigo_usuario";
+            $comandoBuscaRendas = Conexao::Obtem()->prepare($sqlBuscaRendas);
             $comandoBuscaRendas->bindValue(":recebe_codigo_usuario",$codigoUsuarioRenda);
             $comandoBuscaRendas->execute();
             $resultadoBuscaRendas = $comandoBuscaRendas->fetchAll(PDO::FETCH_ASSOC);
